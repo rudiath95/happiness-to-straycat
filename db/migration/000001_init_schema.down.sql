@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS payment;
+DROP TABLE IF EXISTS transaction_detail;
+DROP TABLE IF EXISTS pet_tag;
+DROP TABLE IF EXISTS pet_fav_food;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS pet_immunization;
+
+DROP TABLE IF EXISTS fav_food;
+
+DROP TABLE IF EXISTS immunization;
+
+DROP TABLE IF EXISTS pets;
+
+DROP TABLE IF EXISTS transaction;
+
+DROP TABLE IF EXISTS user_detail;
+
