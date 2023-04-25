@@ -1,2 +1,0 @@
-﻿# happiness-to-straycat
-
