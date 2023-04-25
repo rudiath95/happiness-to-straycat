@@ -21,7 +21,7 @@ CREATE TABLE "users" (
   "email" varchar NOT NULL,
   "password" varchar NOT NULL,
   "level" level DEFAULT 'owner',
-  "owner_detail_id" bigint NOT NULL,
+  "owner_detail_id" bigint,
   "created_at" timestamp NOT NULL DEFAULT (now())
 );
 

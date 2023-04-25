@@ -21,12 +21,12 @@ CREATE TABLE "users" (
   "email" varchar NOT NULL,
   "password" varchar NOT NULL,
   "level" level DEFAULT 'owner',
-  "owner_detail_id" bigint NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "user_detail" (
   "id" bigserial PRIMARY KEY,
+  "user_id" bigint,
   "name" varchar NOT NULL,
   "gender" enum_gender NOT NULL,
   "age" int NOT NULL,
@@ -116,7 +116,7 @@ CREATE INDEX ON "pets" ("name");
 
 CREATE INDEX ON "tags" ("name");
 
-ALTER TABLE "users" ADD FOREIGN KEY ("owner_detail_id") REFERENCES "user_detail" ("id");
+ALTER TABLE "user_detail" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "payment" ADD FOREIGN KEY ("transaction_id") REFERENCES "transaction" ("id");
 
