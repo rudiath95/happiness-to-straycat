@@ -46,7 +46,7 @@ func init() {
 
 	AuthController = *controllers.NewAuthController(db, ctx)
 	UserController = controllers.NewUserController(db, ctx)
-	AuthRoutes = routes.NewAuthRoutes(AuthController)
+	AuthRoutes = routes.NewAuthRoutes(AuthController, db)
 	UserRoutes = routes.NewUserRoutes(UserController, db)
 
 	app = fiber.New()
