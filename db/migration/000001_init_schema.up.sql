@@ -1,8 +1,11 @@
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'level') THEN
-        CREATE TYPE "level" AS ENUM (
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role') THEN
+        CREATE TYPE "role" AS ENUM (
           'admin',
+          'user',
           'owner'
         );
     END IF;
@@ -17,16 +20,22 @@ BEGIN
 END$$;
 
 CREATE TABLE "users" (
-  "id" bigserial PRIMARY KEY,
-  "email" varchar NOT NULL,
-  "password" varchar NOT NULL,
-  "level" level DEFAULT 'owner',
-  "created_at" timestamp NOT NULL DEFAULT (now())
+    "id" UUID NOT NULL DEFAULT (uuid_generate_v4()),
+    "email" VARCHAR NOT NULL,
+    "verified" BOOLEAN NOT NULL,
+    "password" VARCHAR NOT NULL,
+    "role" role DEFAULT 'user',
+    "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+    "updated_at" TIMESTAMP NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
+
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 CREATE TABLE "user_detail" (
   "id" bigserial PRIMARY KEY,
-  "user_id" bigint,
+  "user_id" UUID NOT NULL,
   "name" varchar NOT NULL,
   "gender" enum_gender NOT NULL,
   "age" int NOT NULL,

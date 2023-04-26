@@ -18,4 +18,7 @@ func (rc *AuthRoutes) AuthRoute(rg fiber.Router) {
 
 	router := rg.Group("/auth")
 	router.Post("/register", rc.authController.SignUpUser)
+	router.Post("/login", rc.authController.SignInUser)
+	// router.Get("/refresh", rc.authController.RefreshAccessToken)
+	// router.Get("/logout", middleware.DeserializeUser(rc.db), rc.authController.LogoutUser)
 }

@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS transaction_detail;
 DROP TABLE IF EXISTS pet_tag;
@@ -15,4 +14,7 @@ DROP TABLE IF EXISTS pets;
 DROP TABLE IF EXISTS transaction;
 
 DROP TABLE IF EXISTS user_detail;
+
+DROP TABLE IF EXISTS users;
+
 

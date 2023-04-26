@@ -7,6 +7,8 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type FavFood struct {
@@ -80,19 +82,21 @@ type TransactionDetail struct {
 }
 
 type User struct {
-	ID        int64       `json:"id"`
+	ID        uuid.UUID   `json:"id"`
 	Email     string      `json:"email"`
+	Verified  bool        `json:"verified"`
 	Password  string      `json:"password"`
-	Level     interface{} `json:"level"`
+	Role      interface{} `json:"role"`
 	CreatedAt time.Time   `json:"created_at"`
+	UpdatedAt time.Time   `json:"updated_at"`
 }
 
 type UserDetail struct {
-	ID      int64         `json:"id"`
-	UserID  sql.NullInt64 `json:"user_id"`
-	Name    string        `json:"name"`
-	Gender  interface{}   `json:"gender"`
-	Age     int32         `json:"age"`
-	Address string        `json:"address"`
-	Phone   int32         `json:"phone"`
+	ID      int64       `json:"id"`
+	UserID  uuid.UUID   `json:"user_id"`
+	Name    string      `json:"name"`
+	Gender  interface{} `json:"gender"`
+	Age     int32       `json:"age"`
+	Address string      `json:"address"`
+	Phone   int32       `json:"phone"`
 }

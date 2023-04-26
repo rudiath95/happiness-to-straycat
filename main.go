@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"happiness-to-straycat/config"
@@ -8,20 +9,26 @@ import (
 	dbConn "happiness-to-straycat/db/sqlc"
 	"happiness-to-straycat/routes"
 	"log"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	_ "github.com/lib/pq"
 )
 
 var (
-	server *fiber.App
-	db     *dbConn.Queries
+	app *fiber.App
+	db  *dbConn.Queries
+	ctx context.Context
 
 	AuthController controllers.AuthController
+	UserController controllers.UserController
 	AuthRoutes     routes.AuthRoutes
+	UserRoutes     routes.UserRoutes
 )
 
 func init() {
+	ctx = context.TODO()
 	config, err := config.LoadConfig(".")
 
 	if err != nil {
@@ -37,10 +44,12 @@ func init() {
 
 	fmt.Println("PostgreSQL connected successfully...")
 
-	AuthController = *controllers.NewAuthController(db)
+	AuthController = *controllers.NewAuthController(db, ctx)
+	UserController = controllers.NewUserController(db, ctx)
 	AuthRoutes = routes.NewAuthRoutes(AuthController)
+	UserRoutes = routes.NewUserRoutes(UserController, db)
 
-	server = fiber.New()
+	app = fiber.New()
 }
 
 func main() {
@@ -50,12 +59,25 @@ func main() {
 		log.Fatalf("could not load config: %v", err)
 	}
 
-	router := server.Group("/api")
+	corsConfig := cors.Config{
+		AllowOrigins:     config.Origin,
+		AllowCredentials: true,
+	}
+
+	app.Use(cors.New(corsConfig))
+
+	router := app.Group("/api")
 
 	router.Get("/healthchecker", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{"status": "success", "message": "Welcome to Golang with PostgreSQL"})
 	})
 
 	AuthRoutes.AuthRoute(router)
-	log.Fatal(server.Listen(":" + config.Port))
+	UserRoutes.UserRoute(router)
+
+	app.Use(func(ctx *fiber.Ctx) error {
+		return ctx.Status(http.StatusNotFound).JSON(fiber.Map{"status": "fail", "message": fmt.Sprintf("Route %s not found", ctx.Path())})
+	})
+
+	log.Fatal(app.Listen(":" + config.Port))
 }
