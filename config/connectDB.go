@@ -1,4 +1,4 @@
-package ini
+package config
 
 import (
 	"github.com/spf13/viper"
@@ -7,9 +7,8 @@ import (
 type Config struct {
 	PostgreDriver  string `mapstructure:"POSTGRES_DRIVER"`
 	PostgresSource string `mapstructure:"POSTGRES_SOURCE"`
-	ServerPort     string `mapstructure:"SERVER_PORT"`
-	ClientPort     string `mapstructure:"CLIENT_PORT"`
-	Origin         string `mapstructure:"ORIGIN"`
+
+	Port string `mapstructure:"PORT"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -3,6 +3,15 @@
 # hello:
 #     @echo $(DB)
 
+dev:
+	docker-compose up -d
+
+dev-down:
+	docker-compose down
+
+go:
+	air
+
 postgres:
 	docker run --name some-postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres
 

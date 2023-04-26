@@ -1,36 +1,61 @@
 package main
 
 import (
-	"context"
 	"database/sql"
-	"happiness-to-straycat/controller"
-	"happiness-to-straycat/ini"
+	"fmt"
+	"happiness-to-straycat/config"
+	controllers "happiness-to-straycat/controller"
+	dbConn "happiness-to-straycat/db/sqlc"
 	"happiness-to-straycat/routes"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 )
 
 var (
-	DB  *sql.DB
-	app *fiber.App
-	// db  *dbConn.Queries
-	ctx context.Context
+	server *fiber.App
+	db     *dbConn.Queries
 
-	PostController controller.UserController
-	UserRoutes     routes.UserRouter
+	AuthController controllers.AuthController
+	AuthRoutes     routes.AuthRoutes
 )
 
 func init() {
-	ini.LoadEnvVariables()
-	ini.ConnecttoDB()
+	config, err := config.LoadConfig(".")
+
+	if err != nil {
+		log.Fatalf("could not load config: %v", err)
+	}
+
+	conn, err := sql.Open(config.PostgreDriver, config.PostgresSource)
+	if err != nil {
+		log.Fatalf("could not connect to postgres database: %v", err)
+	}
+
+	db = dbConn.New(conn)
+
+	fmt.Println("PostgreSQL connected successfully...")
+
+	AuthController = *controllers.NewAuthController(db)
+	AuthRoutes = routes.NewAuthRoutes(AuthController)
+
+	server = fiber.New()
 }
 
 func main() {
+	config, err := config.LoadConfig(".")
 
-	api := app.Group("/api")
+	if err != nil {
+		log.Fatalf("could not load config: %v", err)
+	}
 
-	api.Get("/healthchecker", func(ctx *fiber.Ctx) error {
+	router := server.Group("/api")
+
+	router.Get("/healthchecker", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{"status": "success", "message": "Welcome to Golang with PostgreSQL"})
 	})
+
+	AuthRoutes.AuthRoute(router)
+	log.Fatal(server.Listen(":" + config.Port))
 }

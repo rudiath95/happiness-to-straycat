@@ -1,52 +1,41 @@
-package controller
+package controllers
 
 import (
-	"context"
 	db "happiness-to-straycat/db/sqlc"
-	"happiness-to-straycat/schemas"
+	"net/http"
+
+	"happiness-to-straycat/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserController struct {
-	db  *db.Queries
-	ctx context.Context
+type AuthController struct {
+	db *db.Queries
 }
 
-func NewUserController(db *db.Queries, ctx context.Context) *UserController {
-	return &UserController{db, ctx}
+func NewAuthController(db *db.Queries) *AuthController {
+	return &AuthController{db}
 }
 
-func (uc *UserController) CreateUser(ctx *fiber.Ctx) error {
-	var payload *schemas.CreateUser
+func (ac *AuthController) SignUpUser(ctx *fiber.Ctx) error {
+	var credentials *db.User
 
-	if err := ctx.BodyParser(&payload); err != nil {
-		ctx.Status(503).JSON(fiber.Map{
-			"status":  "fail",
-			"message": err.Error(),
-		})
-		return err
+	if err := ctx.BodyParser(&credentials); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(err.Error())
 	}
+
+	hashedPassword := utils.HashPassword(credentials.Password)
 
 	args := &db.CreateUserParams{
-		Email:    payload.Email,
-		Password: payload.Password,
+		Email:    credentials.Email,
+		Password: hashedPassword,
 	}
 
-	user, err := uc.db.CreateUser(ctx.Context(), *args)
+	user, err := ac.db.CreateUser(ctx.Context(), *args)
 
 	if err != nil {
-		ctx.Status(503).JSON(fiber.Map{
-			"status":  "fail",
-			"message": err.Error(),
-		})
-		return err
+		return ctx.Status(http.StatusBadGateway).JSON(err.Error())
 	}
 
-	ctx.JSON(fiber.Map{
-		"message": "Create Data Successfully",
-		"user":    user,
-	})
-
-	return nil
+	return ctx.Status(http.StatusCreated).JSON(fiber.Map{"status": "success", "data": fiber.Map{"user": user}})
 }
