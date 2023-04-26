@@ -68,6 +68,10 @@ func main() {
 
 	router := app.Group("/api")
 
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendString("Hello, World!")
+	})
+
 	router.Get("/healthchecker", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{"status": "success", "message": "Welcome to Golang with PostgreSQL"})
 	})
