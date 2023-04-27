@@ -10,6 +10,7 @@ import (
 	"happiness-to-straycat/routes"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -62,15 +63,32 @@ func main() {
 	corsConfig := cors.Config{
 		AllowOrigins:     config.Origin,
 		AllowCredentials: true,
+		AllowMethods: strings.Join([]string{
+			fiber.MethodGet,
+			fiber.MethodPost,
+			fiber.MethodHead,
+			fiber.MethodPut,
+			fiber.MethodDelete,
+			fiber.MethodPatch,
+		}, ","),
 	}
 
 	app.Use(cors.New(corsConfig))
 
-	router := app.Group("/api")
+	// MANUAL CORS CONFIGURATION
+	// app.Use(func(c *fiber.Ctx) error {
+	// 	c.Set("Access-Control-Allow-Origin", "*") //change * to custom domain later
+	// 	c.Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT")
+	// 	c.Set("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token")
 
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString("Hello, World!")
-	})
+	// 	if c.Method() == "OPTIONS" {
+	// 		return c.SendString("allowed")
+	// 	}
+
+	// 	return c.SendString("hello")
+	// })
+
+	router := app.Group("/api")
 
 	router.Get("/healthchecker", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{"status": "success", "message": "Welcome to Golang with PostgreSQL"})
