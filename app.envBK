@@ -2,13 +2,13 @@ PORT=5173
 NODE_ENV=development
 
 POSTGRES_DRIVER=postgres
-POSTGRES_SOURCE=postgresql://uhs1hatmzr8sz8426wks:JQK1AnEwoGJm7jLK2IYj0jo6O3R1s1@b1szhpgopmmtqftc6woe-postgresql.services.clever-cloud.com:5432/b1szhpgopmmtqftc6woe?sslmode=disable
+POSTGRES_SOURCE=postgresql://root:secret@localhost:5432/happiness-to-straycat?sslmode=disable
 
-POSTGRES_HOST=b1szhpgopmmtqftc6woe-postgresql.services.clever-cloud.com
+POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5432
-POSTGRES_USER=uhs1hatmzr8sz8426wks
-POSTGRES_PASSWORD=JQK1AnEwoGJm7jLK2IYj0jo6O3R1s1
-POSTGRES_DB=b1szhpgopmmtqftc6woe
+POSTGRES_USER=root
+POSTGRES_PASSWORD=secret
+POSTGRES_DB=happiness-to-straycat
 
 ORIGIN=http://localhost:3000
 
