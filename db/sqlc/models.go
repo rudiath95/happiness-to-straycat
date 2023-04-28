@@ -13,7 +13,13 @@ import (
 
 type FavFood struct {
 	ID        int64          `json:"id"`
-	Name      sql.NullString `json:"name"`
+	Company   string         `json:"Company"`
+	Variety   sql.NullString `json:"Variety"`
+	Protein   int32          `json:"Protein"`
+	Fat       int32          `json:"Fat"`
+	Carbs     int32          `json:"Carbs"`
+	Phos      int32          `json:"Phos"`
+	Notes     sql.NullString `json:"Notes"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 }
@@ -86,7 +92,6 @@ type Transaction struct {
 	ID                int64          `json:"id"`
 	TransactionStatus sql.NullString `json:"transaction_status"`
 	PaymentType       sql.NullString `json:"payment_type"`
-	PetID             sql.NullString `json:"pet_id"`
 	CreatedAt         time.Time      `json:"created_at"`
 	UpdatedAt         time.Time      `json:"updated_at"`
 }

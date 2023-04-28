@@ -75,7 +75,6 @@ CREATE TABLE "transaction" (
   "id" bigserial PRIMARY KEY,
   "transaction_status" varchar,
   "payment_type" varchar,
-  "pet_id" varchar,
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
