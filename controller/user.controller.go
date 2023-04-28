@@ -20,5 +20,8 @@ func NewUserController(db *db.Queries, ctx context.Context) UserController {
 func (uc *UserController) GetMe(ctx *fiber.Ctx) error {
 	currentUser := ctx.Locals("currentUser").(db.User)
 
-	return ctx.JSON(fiber.Map{"status": "success", "data": fiber.Map{"user": models.FilteredResponse(currentUser)}})
+	return ctx.JSON(fiber.Map{"status": "success", "data": fiber.Map{
+		"id":   currentUser.ID.String(), //Get ID from currentUser
+		"user": models.FilteredResponse(currentUser),
+	}})
 }

@@ -20,8 +20,8 @@ BEGIN
 END$$;
 
 CREATE TABLE "users" (
-    "id" UUID NOT NULL DEFAULT (uuid_generate_v4()),
-    "email" VARCHAR NOT NULL,
+    "id" UUID NOT NULL DEFAULT (uuid_generate_v4()) ,
+    "email" VARCHAR NOT NULL ,
     "verified" BOOLEAN NOT NULL,
     "password" VARCHAR NOT NULL,
     "role" role DEFAULT 'user',
@@ -36,11 +36,11 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE TABLE "user_detail" (
   "id" bigserial PRIMARY KEY,
   "user_id" UUID NOT NULL,
-  "name" varchar NOT NULL,
-  "gender" enum_gender NOT NULL,
-  "age" int NOT NULL,
-  "address" varchar NOT NULL,
-  "phone" int NOT NULL
+  "name" varchar,
+  "gender" enum_gender,
+  "age" int,
+  "address" varchar,
+  "phone" int
 );
 
 CREATE TABLE "payment" (

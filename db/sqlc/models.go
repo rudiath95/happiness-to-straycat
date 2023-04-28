@@ -92,11 +92,11 @@ type User struct {
 }
 
 type UserDetail struct {
-	ID      int64       `json:"id"`
-	UserID  uuid.UUID   `json:"user_id"`
-	Name    string      `json:"name"`
-	Gender  interface{} `json:"gender"`
-	Age     int32       `json:"age"`
-	Address string      `json:"address"`
-	Phone   int32       `json:"phone"`
+	ID      int64          `json:"id"`
+	UserID  uuid.UUID      `json:"user_id"`
+	Name    sql.NullString `json:"name"`
+	Gender  interface{}    `json:"gender"`
+	Age     sql.NullInt32  `json:"age"`
+	Address sql.NullString `json:"address"`
+	Phone   sql.NullInt32  `json:"phone"`
 }

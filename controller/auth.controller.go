@@ -151,6 +151,7 @@ func (ac *AuthController) RefreshAccessToken(ctx *fiber.Ctx) error {
 }
 
 func (ac *AuthController) LogoutUser(c *fiber.Ctx) error {
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",
 		Value:    "",

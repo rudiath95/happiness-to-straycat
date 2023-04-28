@@ -6,7 +6,19 @@ INSERT INTO users (
   role,
   updated_at
 ) VALUES (
-  $1, $2,$3, $4,$5
+  $1, $2, $3, $4,$5
+) RETURNING *;
+
+-- name: CreateUserDetail :one
+INSERT INTO user_detail (
+  user_id, 
+  name,
+  gender,
+  age,
+  address,
+  phone
+) VALUES (
+  $1, $2, $3, $4, $5, $6
 ) RETURNING *;
 
 -- name: GetUser :one

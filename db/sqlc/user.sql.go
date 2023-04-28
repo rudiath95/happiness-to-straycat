@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,7 +21,7 @@ INSERT INTO users (
   role,
   updated_at
 ) VALUES (
-  $1, $2,$3, $4,$5
+  $1, $2, $3, $4,$5
 ) RETURNING id, email, verified, password, role, created_at, updated_at
 `
 
@@ -49,6 +50,50 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Role,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createUserDetail = `-- name: CreateUserDetail :one
+INSERT INTO user_detail (
+  user_id, 
+  name,
+  gender,
+  age,
+  address,
+  phone
+) VALUES (
+  $1, $2, $3, $4, $5, $6
+) RETURNING id, user_id, name, gender, age, address, phone
+`
+
+type CreateUserDetailParams struct {
+	UserID  uuid.UUID      `json:"user_id"`
+	Name    sql.NullString `json:"name"`
+	Gender  interface{}    `json:"gender"`
+	Age     sql.NullInt32  `json:"age"`
+	Address sql.NullString `json:"address"`
+	Phone   sql.NullInt32  `json:"phone"`
+}
+
+func (q *Queries) CreateUserDetail(ctx context.Context, arg CreateUserDetailParams) (UserDetail, error) {
+	row := q.db.QueryRowContext(ctx, createUserDetail,
+		arg.UserID,
+		arg.Name,
+		arg.Gender,
+		arg.Age,
+		arg.Address,
+		arg.Phone,
+	)
+	var i UserDetail
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Gender,
+		&i.Age,
+		&i.Address,
+		&i.Phone,
 	)
 	return i, err
 }

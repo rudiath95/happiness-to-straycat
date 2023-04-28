@@ -4,6 +4,8 @@ import (
 	"fmt"
 	db "happiness-to-straycat/db/sqlc"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // ? SignInInput struct
@@ -14,11 +16,14 @@ type SignInInput struct {
 
 // ? UserResponse struct
 type UserResponse struct {
-	ID        int64     `json:"id,omitempty"`
+	ID        uuid.UUID `json:"id,omitempty"`
 	Email     string    `json:"email,omitempty"`
 	Role      string    `json:"role,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+type UserResponseID struct {
+	ID uuid.UUID `json:"id,omitempty"`
 }
 
 func FilteredResponse(user db.User) UserResponse {
@@ -26,12 +31,19 @@ func FilteredResponse(user db.User) UserResponse {
 	if str, ok := user.Role.(string); ok {
 		convertedString = fmt.Sprintf("%v", user.Role)
 	} else {
-		fmt.Println("fail to convert", str)
+		_ = str
 	}
 	return UserResponse{
+		ID:        user.ID,
 		Email:     user.Email,
 		Role:      convertedString,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
+	}
+}
+
+func FilterUserID(user db.User) UserResponse {
+	return UserResponse{
+		ID: user.ID,
 	}
 }
