@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/gofiber/fiber/v2 v2.44.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
-	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.8
 	github.com/spf13/viper v1.15.0
 	golang.org/x/crypto v0.8.0
