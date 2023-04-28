@@ -26,7 +26,7 @@ CREATE TABLE "users" (
     "password" VARCHAR NOT NULL,
     "role" role DEFAULT 'user',
     "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
-    "updated_at" TIMESTAMP NOT NULL,
+    "updated_at" TIMESTAMP NOT NULL DEFAULT (now()),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -40,7 +40,9 @@ CREATE TABLE "user_detail" (
   "gender" enum_gender,
   "age" int,
   "address" varchar,
-  "phone" int
+  "phone" int,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "payment" (
@@ -49,7 +51,9 @@ CREATE TABLE "payment" (
   "payment_status" varchar NOT NULL,
   "started_at" timestamp NOT NULL DEFAULT (now()),
   "end_at" timestamp NOT NULL,
-  "transaction_id" bigint NOT NULL
+  "transaction_id" bigint NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "pets" (
@@ -63,54 +67,71 @@ CREATE TABLE "pets" (
   "condition" varchar,
   "owner_id" bigint NOT NULL,
   "transaction_id" bigint NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT (now())
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "transaction" (
   "id" bigserial PRIMARY KEY,
   "transaction_status" varchar,
   "payment_type" varchar,
-  "pet_id" varchar
+  "pet_id" varchar,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "transaction_detail" (
   "id" bigserial PRIMARY KEY,
   "name" varchar,
   "price" int,
-  "transaction_id" bigint NOT NULL
+  "transaction_id" bigint NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL
 );
 
 CREATE TABLE "pet_tag" (
   "id" bigserial PRIMARY KEY,
   "pet_id" bigint NOT NULL,
-  "tag_id" bigint NOT NULL
+  "tag_id" bigint NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "fav_food" (
   "id" bigserial PRIMARY KEY,
-  "name" varchar
+  "name" varchar,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "pet_fav_food" (
   "id" bigserial PRIMARY KEY,
   "pet_id" bigint NOT NULL,
-  "food_id" bigint NOT NULL
+  "food_id" bigint NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "tags" (
   "id" bigserial PRIMARY KEY,
-  "name" varchar NOT NULL
+  "name" varchar NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "immunization" (
   "id" bigserial PRIMARY KEY,
-  "name" varchar
+  "name" varchar,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "pet_immunization" (
   "id" bigserial PRIMARY KEY,
   "pet_id" bigint NOT NULL,
-  "immunization_id" bigint NOT NULL
+  "immunization_id" bigint NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "updated_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
 CREATE INDEX ON "users" ("email");
@@ -146,3 +167,14 @@ ALTER TABLE "pet_fav_food" ADD FOREIGN KEY ("food_id") REFERENCES "fav_food" ("i
 ALTER TABLE "pet_immunization" ADD FOREIGN KEY ("pet_id") REFERENCES "pets" ("id");
 
 ALTER TABLE "pet_immunization" ADD FOREIGN KEY ("immunization_id") REFERENCES "immunization" ("id");
+
+
+INSERT INTO immunization (name)
+VALUES  ('Feline panleukopenia virus'),
+        ('Feline viral rhinotracheitis'),
+        ('Feline caliciviruses'),
+        ('Rabies virus'),
+        ('Chlamydophila felis'),
+        ('Bordetella bronchiseptica'),
+        ('Feline infectious peritonitis (FIP)'),
+        ('Feline leukemia virus (FeLV)');

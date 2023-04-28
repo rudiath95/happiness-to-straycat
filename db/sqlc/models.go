@@ -12,13 +12,17 @@ import (
 )
 
 type FavFood struct {
-	ID   int64          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID        int64          `json:"id"`
+	Name      sql.NullString `json:"name"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Immunization struct {
-	ID   int64          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID        int64          `json:"id"`
+	Name      sql.NullString `json:"name"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Payment struct {
@@ -28,6 +32,8 @@ type Payment struct {
 	StartedAt     time.Time `json:"started_at"`
 	EndAt         time.Time `json:"end_at"`
 	TransactionID int64     `json:"transaction_id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 type Pet struct {
@@ -42,29 +48,38 @@ type Pet struct {
 	OwnerID       int64          `json:"owner_id"`
 	TransactionID int64          `json:"transaction_id"`
 	CreatedAt     time.Time      `json:"created_at"`
+	UpdatedAt     time.Time      `json:"updated_at"`
 }
 
 type PetFavFood struct {
-	ID     int64 `json:"id"`
-	PetID  int64 `json:"pet_id"`
-	FoodID int64 `json:"food_id"`
+	ID        int64     `json:"id"`
+	PetID     int64     `json:"pet_id"`
+	FoodID    int64     `json:"food_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type PetImmunization struct {
-	ID             int64 `json:"id"`
-	PetID          int64 `json:"pet_id"`
-	ImmunizationID int64 `json:"immunization_id"`
+	ID             int64     `json:"id"`
+	PetID          int64     `json:"pet_id"`
+	ImmunizationID int64     `json:"immunization_id"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 type PetTag struct {
-	ID    int64 `json:"id"`
-	PetID int64 `json:"pet_id"`
-	TagID int64 `json:"tag_id"`
+	ID        int64     `json:"id"`
+	PetID     int64     `json:"pet_id"`
+	TagID     int64     `json:"tag_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Tag struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Transaction struct {
@@ -72,6 +87,8 @@ type Transaction struct {
 	TransactionStatus sql.NullString `json:"transaction_status"`
 	PaymentType       sql.NullString `json:"payment_type"`
 	PetID             sql.NullString `json:"pet_id"`
+	CreatedAt         time.Time      `json:"created_at"`
+	UpdatedAt         time.Time      `json:"updated_at"`
 }
 
 type TransactionDetail struct {
@@ -79,6 +96,8 @@ type TransactionDetail struct {
 	Name          sql.NullString `json:"name"`
 	Price         sql.NullInt32  `json:"price"`
 	TransactionID int64          `json:"transaction_id"`
+	CreatedAt     time.Time      `json:"created_at"`
+	UpdatedAt     time.Time      `json:"updated_at"`
 }
 
 type User struct {
@@ -92,11 +111,13 @@ type User struct {
 }
 
 type UserDetail struct {
-	ID      int64          `json:"id"`
-	UserID  uuid.UUID      `json:"user_id"`
-	Name    sql.NullString `json:"name"`
-	Gender  interface{}    `json:"gender"`
-	Age     sql.NullInt32  `json:"age"`
-	Address sql.NullString `json:"address"`
-	Phone   sql.NullInt32  `json:"phone"`
+	ID        int64          `json:"id"`
+	UserID    uuid.UUID      `json:"user_id"`
+	Name      sql.NullString `json:"name"`
+	Gender    interface{}    `json:"gender"`
+	Age       sql.NullInt32  `json:"age"`
+	Address   sql.NullString `json:"address"`
+	Phone     sql.NullInt32  `json:"phone"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }

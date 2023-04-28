@@ -64,7 +64,7 @@ INSERT INTO user_detail (
   phone
 ) VALUES (
   $1, $2, $3, $4, $5, $6
-) RETURNING id, user_id, name, gender, age, address, phone
+) RETURNING id, user_id, name, gender, age, address, phone, created_at, updated_at
 `
 
 type CreateUserDetailParams struct {
@@ -94,6 +94,8 @@ func (q *Queries) CreateUserDetail(ctx context.Context, arg CreateUserDetailPara
 		&i.Age,
 		&i.Address,
 		&i.Phone,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -142,6 +144,28 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Verified,
 		&i.Password,
 		&i.Role,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserDetail = `-- name: GetUserDetail :one
+SELECT id, user_id, name, gender, age, address, phone, created_at, updated_at FROM user_detail
+WHERE user_id = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserDetail(ctx context.Context, userID uuid.UUID) (UserDetail, error) {
+	row := q.db.QueryRowContext(ctx, getUserDetail, userID)
+	var i UserDetail
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Gender,
+		&i.Age,
+		&i.Address,
+		&i.Phone,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -212,6 +236,53 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Verified,
 		&i.Password,
 		&i.Role,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateUserDetail = `-- name: UpdateUserDetail :one
+UPDATE user_detail
+SET name = $2,
+name = $3,
+gender = $4,
+age = $5,
+address = $6,
+phone = $7
+WHERE user_id = $1
+RETURNING id, user_id, name, gender, age, address, phone, created_at, updated_at
+`
+
+type UpdateUserDetailParams struct {
+	UserID  uuid.UUID      `json:"user_id"`
+	Name    sql.NullString `json:"name"`
+	Name_2  sql.NullString `json:"name_2"`
+	Gender  interface{}    `json:"gender"`
+	Age     sql.NullInt32  `json:"age"`
+	Address sql.NullString `json:"address"`
+	Phone   sql.NullInt32  `json:"phone"`
+}
+
+func (q *Queries) UpdateUserDetail(ctx context.Context, arg UpdateUserDetailParams) (UserDetail, error) {
+	row := q.db.QueryRowContext(ctx, updateUserDetail,
+		arg.UserID,
+		arg.Name,
+		arg.Name_2,
+		arg.Gender,
+		arg.Age,
+		arg.Address,
+		arg.Phone,
+	)
+	var i UserDetail
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Gender,
+		&i.Age,
+		&i.Address,
+		&i.Phone,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
