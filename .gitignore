@@ -1,3 +1,5 @@
 *.env
-happiness-to-straycat.exe
+*.exe
+*.exe~
+
 
