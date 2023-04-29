@@ -8,18 +8,26 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createImmunization = `-- name: CreateImmunization :one
 INSERT INTO immunization (
-  name
+  name,
+  updated_at
+  
 ) VALUES (
-  $1
+  $1,$2
 ) RETURNING id, name, created_at, updated_at
 `
 
-func (q *Queries) CreateImmunization(ctx context.Context, name sql.NullString) (Immunization, error) {
-	row := q.db.QueryRowContext(ctx, createImmunization, name)
+type CreateImmunizationParams struct {
+	Name      sql.NullString `json:"name"`
+	UpdatedAt time.Time      `json:"updated_at"`
+}
+
+func (q *Queries) CreateImmunization(ctx context.Context, arg CreateImmunizationParams) (Immunization, error) {
+	row := q.db.QueryRowContext(ctx, createImmunization, arg.Name, arg.UpdatedAt)
 	var i Immunization
 	err := row.Scan(
 		&i.ID,
@@ -112,4 +120,31 @@ func (q *Queries) ListImmunizations(ctx context.Context, arg ListImmunizationsPa
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateImmunization = `-- name: UpdateImmunization :one
+UPDATE immunization
+set 
+name = coalesce($1, name), 
+updated_at = coalesce($2, updated_at ) 
+WHERE id = $3
+RETURNING id, name, created_at, updated_at
+`
+
+type UpdateImmunizationParams struct {
+	Name      sql.NullString `json:"name"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
+	ID        int64          `json:"id"`
+}
+
+func (q *Queries) UpdateImmunization(ctx context.Context, arg UpdateImmunizationParams) (Immunization, error) {
+	row := q.db.QueryRowContext(ctx, updateImmunization, arg.Name, arg.UpdatedAt, arg.ID)
+	var i Immunization
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

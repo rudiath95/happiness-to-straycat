@@ -1,9 +1,19 @@
 -- name: CreateTag :one
 INSERT INTO tags (
-  name
+  name,
+  updated_at
+  
 ) VALUES (
-  $1
+  $1,$2
 ) RETURNING *;
+
+-- name: UpdateTag :one
+UPDATE tags
+set 
+name = coalesce(sqlc.narg('name'), name), 
+updated_at = coalesce(sqlc.narg('updated_at'), updated_at ) 
+WHERE id = sqlc.arg('id')
+RETURNING *;
 
 -- name: GetTagByID :one
 SELECT * FROM tags
