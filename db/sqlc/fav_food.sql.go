@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createFood = `-- name: CreateFood :one
@@ -17,19 +18,23 @@ INSERT INTO fav_food (
   "Protein",
   "Fat",
   "Carbs",
-  "Phos"
+  "Phos",
+  "Notes",
+  updated_at
 ) VALUES (
-  $1, $2, $3, $4, $5, $6
+  $1, $2, $3, $4, $5, $6,$7,$8
 ) RETURNING id, "Company", "Variety", "Protein", "Fat", "Carbs", "Phos", "Notes", created_at, updated_at
 `
 
 type CreateFoodParams struct {
-	Company string         `json:"Company"`
-	Variety sql.NullString `json:"Variety"`
-	Protein int32          `json:"Protein"`
-	Fat     int32          `json:"Fat"`
-	Carbs   int32          `json:"Carbs"`
-	Phos    int32          `json:"Phos"`
+	Company   string         `json:"Company"`
+	Variety   sql.NullString `json:"Variety"`
+	Protein   int32          `json:"Protein"`
+	Fat       int32          `json:"Fat"`
+	Carbs     int32          `json:"Carbs"`
+	Phos      int32          `json:"Phos"`
+	Notes     sql.NullString `json:"Notes"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 func (q *Queries) CreateFood(ctx context.Context, arg CreateFoodParams) (FavFood, error) {
@@ -40,6 +45,8 @@ func (q *Queries) CreateFood(ctx context.Context, arg CreateFoodParams) (FavFood
 		arg.Fat,
 		arg.Carbs,
 		arg.Phos,
+		arg.Notes,
+		arg.UpdatedAt,
 	)
 	var i FavFood
 	err := row.Scan(
@@ -116,17 +123,57 @@ func (q *Queries) GetFoodByCompany(ctx context.Context, arg GetFoodByCompanyPara
 
 const getFoodByID = `-- name: GetFoodByID :many
 SELECT id, "Company", "Variety", "Protein", "Fat", "Carbs", "Phos", "Notes", created_at, updated_at FROM fav_food
- ORDER BY id asc
- LIMIT $1 OFFSET $2
+WHERE id = $1 LIMIT 1
 `
 
-type GetFoodByIDParams struct {
+func (q *Queries) GetFoodByID(ctx context.Context, id int64) ([]FavFood, error) {
+	rows, err := q.db.QueryContext(ctx, getFoodByID, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FavFood
+	for rows.Next() {
+		var i FavFood
+		if err := rows.Scan(
+			&i.ID,
+			&i.Company,
+			&i.Variety,
+			&i.Protein,
+			&i.Fat,
+			&i.Carbs,
+			&i.Phos,
+			&i.Notes,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listFavFoods = `-- name: ListFavFoods :many
+SELECT id, "Company", "Variety", "Protein", "Fat", "Carbs", "Phos", "Notes", created_at, updated_at FROM fav_food
+ORDER BY id
+LIMIT $1
+OFFSET $2
+`
+
+type ListFavFoodsParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) GetFoodByID(ctx context.Context, arg GetFoodByIDParams) ([]FavFood, error) {
-	rows, err := q.db.QueryContext(ctx, getFoodByID, arg.Limit, arg.Offset)
+func (q *Queries) ListFavFoods(ctx context.Context, arg ListFavFoodsParams) ([]FavFood, error) {
+	rows, err := q.db.QueryContext(ctx, listFavFoods, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -166,19 +213,23 @@ SET "Company" = $2,
     "Protein" = $4,
     "Fat" = $5,
     "Carbs" = $6,
-    "Phos" = $7
+    "Phos" = $7,
+    "Notes"=$8,
+    updated_at=$9
 WHERE id = $1
 RETURNING id, "Company", "Variety", "Protein", "Fat", "Carbs", "Phos", "Notes", created_at, updated_at
 `
 
 type UpdateFoodParams struct {
-	ID      int64          `json:"id"`
-	Company string         `json:"Company"`
-	Variety sql.NullString `json:"Variety"`
-	Protein int32          `json:"Protein"`
-	Fat     int32          `json:"Fat"`
-	Carbs   int32          `json:"Carbs"`
-	Phos    int32          `json:"Phos"`
+	ID        int64          `json:"id"`
+	Company   string         `json:"Company"`
+	Variety   sql.NullString `json:"Variety"`
+	Protein   int32          `json:"Protein"`
+	Fat       int32          `json:"Fat"`
+	Carbs     int32          `json:"Carbs"`
+	Phos      int32          `json:"Phos"`
+	Notes     sql.NullString `json:"Notes"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 func (q *Queries) UpdateFood(ctx context.Context, arg UpdateFoodParams) (FavFood, error) {
@@ -190,6 +241,8 @@ func (q *Queries) UpdateFood(ctx context.Context, arg UpdateFoodParams) (FavFood
 		arg.Fat,
 		arg.Carbs,
 		arg.Phos,
+		arg.Notes,
+		arg.UpdatedAt,
 	)
 	var i FavFood
 	err := row.Scan(
