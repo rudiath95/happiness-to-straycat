@@ -22,10 +22,15 @@ var (
 	db  *dbConn.Queries
 	ctx context.Context
 
-	AuthController controllers.AuthController
-	UserController controllers.UserController
-	AuthRoutes     routes.AuthRoutes
-	UserRoutes     routes.UserRoutes
+	AuthController        controllers.AuthController
+	UserController        controllers.UserController
+	ImmunzationController controllers.ImmunizationController
+	TagController         controllers.TagController
+
+	AuthRoutes         routes.AuthRoutes
+	UserRoutes         routes.UserRoutes
+	ImmunizationRoutes routes.ImmunizationRoutes
+	TagnRoutes         routes.TagRoutes
 )
 
 func init() {
@@ -47,8 +52,12 @@ func init() {
 
 	AuthController = *controllers.NewAuthController(db, ctx)
 	UserController = controllers.NewUserController(db, ctx)
+	ImmunzationController = *controllers.NewImmunizationController(db, ctx)
+	TagController = *controllers.NewTagController(db, ctx)
 	AuthRoutes = routes.NewAuthRoutes(AuthController, db)
 	UserRoutes = routes.NewUserRoutes(UserController, db)
+	ImmunizationRoutes = routes.NewImmunizationRoutes(ImmunzationController, db)
+	TagnRoutes = routes.NewTagRoutes(TagController, db)
 
 	app = fiber.New()
 }
@@ -96,6 +105,8 @@ func main() {
 
 	AuthRoutes.AuthRoute(router)
 	UserRoutes.UserRoute(router)
+	ImmunizationRoutes.ImmunizationRoute(router)
+	TagnRoutes.TagRoute(router)
 
 	app.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusNotFound).JSON(fiber.Map{"status": "fail", "message": fmt.Sprintf("Route %s not found", ctx.Path())})

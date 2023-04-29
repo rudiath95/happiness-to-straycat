@@ -1,9 +1,19 @@
 -- name: CreateImmunization :one
 INSERT INTO immunization (
-  name
+  name,
+  updated_at
+  
 ) VALUES (
-  $1
+  $1,$2
 ) RETURNING *;
+
+-- name: UpdateImmunization :one
+UPDATE immunization
+set 
+name = coalesce(sqlc.narg('name'), name), 
+updated_at = coalesce(sqlc.narg('updated_at'), updated_at ) 
+WHERE id = sqlc.arg('id')
+RETURNING *;
 
 -- name: GetImmunizationByID :one
 SELECT * FROM immunization

@@ -7,18 +7,27 @@ package db
 
 import (
 	"context"
+	"database/sql"
+	"time"
 )
 
 const createTag = `-- name: CreateTag :one
 INSERT INTO tags (
-  name
+  name,
+  updated_at
+  
 ) VALUES (
-  $1
+  $1,$2
 ) RETURNING id, name, created_at, updated_at
 `
 
-func (q *Queries) CreateTag(ctx context.Context, name string) (Tag, error) {
-	row := q.db.QueryRowContext(ctx, createTag, name)
+type CreateTagParams struct {
+	Name      string    `json:"name"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (q *Queries) CreateTag(ctx context.Context, arg CreateTagParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, createTag, arg.Name, arg.UpdatedAt)
 	var i Tag
 	err := row.Scan(
 		&i.ID,
@@ -111,4 +120,31 @@ func (q *Queries) ListTags(ctx context.Context, arg ListTagsParams) ([]Tag, erro
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateTag = `-- name: UpdateTag :one
+UPDATE tags
+set 
+name = coalesce($1, name), 
+updated_at = coalesce($2, updated_at ) 
+WHERE id = $3
+RETURNING id, name, created_at, updated_at
+`
+
+type UpdateTagParams struct {
+	Name      sql.NullString `json:"name"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
+	ID        int64          `json:"id"`
+}
+
+func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, updateTag, arg.Name, arg.UpdatedAt, arg.ID)
+	var i Tag
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
