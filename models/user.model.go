@@ -26,7 +26,7 @@ type UserResponseID struct {
 	ID uuid.UUID `json:"id,omitempty"`
 }
 
-func FilteredResponse(user db.User) UserResponse {
+func FilteredResponse(user *db.User) UserResponse {
 	var convertedString string
 	if str, ok := user.Role.(string); ok {
 		convertedString = fmt.Sprintf("%v", user.Role)

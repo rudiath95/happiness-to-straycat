@@ -26,11 +26,13 @@ var (
 	UserController        controllers.UserController
 	ImmunzationController controllers.ImmunizationController
 	TagController         controllers.TagController
+	FavFoodController     controllers.FavFoodController
 
 	AuthRoutes         routes.AuthRoutes
 	UserRoutes         routes.UserRoutes
 	ImmunizationRoutes routes.ImmunizationRoutes
 	TagnRoutes         routes.TagRoutes
+	FavFoodRoutes      routes.FavFoodRoutes
 )
 
 func init() {
@@ -54,10 +56,13 @@ func init() {
 	UserController = controllers.NewUserController(db, ctx)
 	ImmunzationController = *controllers.NewImmunizationController(db, ctx)
 	TagController = *controllers.NewTagController(db, ctx)
+	FavFoodController = *controllers.NewFavFoodController(db, ctx)
+
 	AuthRoutes = routes.NewAuthRoutes(AuthController, db)
 	UserRoutes = routes.NewUserRoutes(UserController, db)
 	ImmunizationRoutes = routes.NewImmunizationRoutes(ImmunzationController, db)
 	TagnRoutes = routes.NewTagRoutes(TagController, db)
+	FavFoodRoutes = routes.NewFavFoodRoutes(FavFoodController, db)
 
 	app = fiber.New()
 }
@@ -107,6 +112,7 @@ func main() {
 	UserRoutes.UserRoute(router)
 	ImmunizationRoutes.ImmunizationRoute(router)
 	TagnRoutes.TagRoute(router)
+	FavFoodRoutes.FavFoodRoute(router)
 
 	app.Use(func(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusNotFound).JSON(fiber.Map{"status": "fail", "message": fmt.Sprintf("Route %s not found", ctx.Path())})

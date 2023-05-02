@@ -5,15 +5,16 @@ INSERT INTO fav_food (
   "Protein",
   "Fat",
   "Carbs",
-  "Phos"
+  "Phos",
+  "Notes",
+  updated_at
 ) VALUES (
-  $1, $2, $3, $4, $5, $6
+  $1, $2, $3, $4, $5, $6,$7,$8
 ) RETURNING *;
 
 -- name: GetFoodByID :many
 SELECT * FROM fav_food
- ORDER BY id asc
- LIMIT $1 OFFSET $2;
+WHERE id = $1 LIMIT 1;
 
 -- name: GetFoodByCompany :many
 SELECT * FROM fav_food
@@ -28,9 +29,17 @@ SET "Company" = $2,
     "Protein" = $4,
     "Fat" = $5,
     "Carbs" = $6,
-    "Phos" = $7
+    "Phos" = $7,
+    "Notes"=$8,
+    updated_at=$9
 WHERE id = $1
 RETURNING *;
+
+-- name: ListFavFoods :many
+SELECT * FROM fav_food
+ORDER BY id
+LIMIT $1
+OFFSET $2;
 
 -- name: DeleteFood :exec
 DELETE FROM fav_food 
