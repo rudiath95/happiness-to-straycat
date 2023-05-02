@@ -2,7 +2,7 @@
 
 URL to Test https://happiness-to-straycat-production.up.railway.app/
 
-### USER
+## USER 
 
 register> api/auth/register [POST]
 
@@ -27,7 +27,7 @@ Check Login User> /api/users/me [GET]
 
 Logout> api/auth/logout [GET]
 
-### Fav_Food
+## Fav_Food
 
 Create Tag> api/food/ [POST]
 
@@ -65,7 +65,7 @@ Get All Immunization> api/immunization/ [GET]
 
 Delete ImmunizationByID> api/immunization/1 [DELETE]
 
-### Tag
+## Tag
 
 Create Tag> api/tag/ [POST]
 
