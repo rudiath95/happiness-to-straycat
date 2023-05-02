@@ -19,7 +19,7 @@ URL to Test https://happiness-to-straycat-production.up.railway.app/
 register> api/auth/register [POST]
 
 >{
-  "email": "mailto:user@example.com",
+  "email": "user@example.com",
   "password": "password123",
   "name": "John Doe",
   "gender": "male",
@@ -31,7 +31,7 @@ register> api/auth/register [POST]
 Login> api/auth/login [POST]
 
 >{
-  "mailto:email":"user@example.com",
+  "email":"user@example.com",
   "password":"password123"
 }
 
