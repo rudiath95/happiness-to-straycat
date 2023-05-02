@@ -2,6 +2,8 @@
 
 URL to Test https://happiness-to-straycat-production.up.railway.app/
 
+### USER
+
 register> api/auth/register [POST]
 
 `{
@@ -25,6 +27,8 @@ Check Login User> /api/users/me [GET]
 
 Logout> api/auth/logout [GET]
 
+### Fav_Food
+
 Create Tag> api/food/ [POST]
 
 `{
@@ -45,6 +49,8 @@ Get All Tag> api/food/ [GET]
 
 Delete TagByID> api/food/1 [DELETE]
 
+### Immunization
+
 Create Immunization> api/immunization/ [POST]
 
 `{
@@ -59,9 +65,11 @@ Get All Immunization> api/immunization/ [GET]
 
 Delete ImmunizationByID> api/immunization/1 [DELETE]
 
+### Tag
 
-`Create Tag> api/tag/ [POST]
-{
+Create Tag> api/tag/ [POST]
+
+`{
   "name":"New TagName"
 }`
 
