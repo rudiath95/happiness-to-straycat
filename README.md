@@ -3,6 +3,7 @@
 ## List of Packages, Features and Database Used
 
 - SQLC 
+- Fiber V2
 - UUID
 - JWT
 - Docker
