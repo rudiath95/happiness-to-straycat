@@ -1,5 +1,15 @@
 ﻿# happiness-to-straycat
 
+# List of Packages, Features and Database Used
+
+- SQLC 
+- UUID
+- JWT
+- Docker
+- Viper
+- Postgresql
+- Redis
+
 URL to Test https://happiness-to-straycat-production.up.railway.app/
 
 ## USER 
