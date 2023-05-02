@@ -38,8 +38,11 @@ Create Tag> api/food/ [POST]
 }`
 
 Update Tag> api/food/1 [PATCH]
+
 Get TagByID> api/food/1 [GET]
+
 Get All Tag> api/food/ [GET]
+
 Delete TagByID> api/food/1 [DELETE]
 
 Create Immunization> api/immunization/ [POST]
@@ -49,8 +52,11 @@ Create Immunization> api/immunization/ [POST]
 }`
 
 Update Immunization> api/immunization/1 [PATCH]
+
 Get ImmunizationByID> api/immunization/1 [GET]
+
 Get All Immunization> api/immunization/ [GET]
+
 Delete ImmunizationByID> api/immunization/1 [DELETE]
 
 
@@ -61,6 +67,9 @@ Delete ImmunizationByID> api/immunization/1 [DELETE]
 
 
 Update Tag> api/tag/1 [PATCH]
+
 Get TagByID> api/tag/1 [GET]
+
 Get All Tag> api/tag/ [GET]
+
 Delete TagByID> api/tag/1 [DELETE]
