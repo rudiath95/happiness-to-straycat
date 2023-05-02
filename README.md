@@ -1,6 +1,6 @@
 ﻿# happiness-to-straycat
 
-# List of Packages, Features and Database Used
+## List of Packages, Features and Database Used
 
 - SQLC 
 - UUID
