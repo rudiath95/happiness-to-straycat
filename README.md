@@ -18,7 +18,7 @@ URL to Test https://happiness-to-straycat-production.up.railway.app/
 
 register> api/auth/register [POST]
 
->{
+>`{
   "email": "user@example.com",
   "password": "password123",
   "name": "John Doe",
@@ -26,14 +26,14 @@ register> api/auth/register [POST]
   "age": 30,
   "address": "123 Main St",
   "phone": 5551234567
-}
+}`
 
 Login> api/auth/login [POST]
 
->{
+>`{
   "email":"user@example.com",
   "password":"password123"
-}
+}`
 
 Check Login User> /api/users/me [GET]
 
@@ -43,7 +43,7 @@ Logout> api/auth/logout [GET]
 
 Create Tag> api/food/ [POST]
 
->{
+>`{
     "Company": "NewFood",
     "Variety": "Test",
     "Protein": 6000,
@@ -51,7 +51,7 @@ Create Tag> api/food/ [POST]
     "Carbs": 65450,
     "Phos": 554640,
     "Notes": "Test"
-}
+}`
 
 Update Tag> api/food/1 [PATCH]
 
@@ -65,9 +65,9 @@ Delete TagByID> api/food/1 [DELETE]
 
 Create Immunization> api/immunization/ [POST]
 
->{
+>`{
   "name":"New Immunization "
-}
+}`
 
 Update Immunization> api/immunization/1 [PATCH]
 
@@ -81,9 +81,9 @@ Delete ImmunizationByID> api/immunization/1 [DELETE]
 
 Create Tag> api/tag/ [POST]
 
->{
+>`{
   "name":"New TagName"
-}
+}`
 
 
 Update Tag> api/tag/1 [PATCH]
