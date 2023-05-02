@@ -9,6 +9,7 @@
 - Viper
 - Postgresql
 - Redis
+- Compile Daemon
 
 URL to Test https://happiness-to-straycat-production.up.railway.app/
 
