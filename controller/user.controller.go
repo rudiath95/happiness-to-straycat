@@ -21,7 +21,7 @@ func (uc *UserController) GetMe(ctx *fiber.Ctx) error {
 	currentUser := ctx.Locals("currentUser").(db.User)
 
 	return ctx.JSON(fiber.Map{"status": "success", "data": fiber.Map{
-		"id":   currentUser.ID.String(), //Get ID from currentUser
-		"user": models.FilteredResponse(currentUser),
+		"id":   currentUser.ID.String(),
+		"user": models.FilteredResponse(&currentUser),
 	}})
 }

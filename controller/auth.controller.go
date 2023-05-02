@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
@@ -15,6 +16,25 @@ import (
 	"github.com/google/uuid"
 )
 
+type Role string
+
+const (
+	User  Role = "user"
+	Admin Role = "admin"
+)
+
+type Gender string
+
+const (
+	Male   Gender = "male"
+	Female Gender = "female"
+)
+
+type UserWithDetail struct {
+	User       *db.User       `json:"user"`
+	UserDetail *db.UserDetail `json:"user_detail"`
+}
+
 type AuthController struct {
 	db  *db.Queries
 	ctx context.Context
@@ -23,34 +43,116 @@ type AuthController struct {
 func NewAuthController(db *db.Queries, ctx context.Context) *AuthController {
 	return &AuthController{db, ctx}
 }
-
 func (ac *AuthController) SignUpUser(c *fiber.Ctx) error {
-	var credentials *db.CreateUserParams
+	var credentials map[string]interface{}
 
 	if err := c.BodyParser(&credentials); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	hashedPassword := utils.HashPassword(credentials.Password)
+	email, ok := credentials["email"].(string)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid email"})
+	}
 
-	args := &db.CreateUserParams{
-		Email:     credentials.Email,
-		Password:  hashedPassword,
+	password, ok := credentials["password"].(string)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid password"})
+	}
+
+	gender, ok := credentials["gender"].(string)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid gender"})
+	}
+
+	age, ok := credentials["age"].(float64)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid age"})
+	}
+
+	address, ok := credentials["address"].(string)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid address"})
+	}
+
+	phone, ok := credentials["phone"].(float64)
+	if !ok {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "invalid phone"})
+	}
+
+	name := sql.NullString{}
+	if n, ok := credentials["name"].(string); ok {
+		name = sql.NullString{String: n, Valid: true}
+	}
+
+	hashedPassword := utils.HashPassword(password)
+
+	args := db.CreateUserAndDetailParams{
+		Email:     email,
 		Verified:  true,
-		Role:      "user",
+		Password:  hashedPassword,
+		Role:      Role("user"),
+		Name:      name,
+		Gender:    Gender(gender),
+		Age:       sql.NullInt32{Int32: int32(age), Valid: true},
+		Address:   sql.NullString{String: address, Valid: true},
+		Phone:     sql.NullInt32{Int32: int32(phone), Valid: true},
+		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
-	user, err := ac.db.CreateUser(c.Context(), *args)
-
+	userDetail, err := ac.db.CreateUserAndDetail(ac.ctx, args)
 	if err != nil {
-		return c.Status(http.StatusBadGateway).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	user := &db.User{
+		ID:        userDetail.UserID,
+		Email:     email,
+		Verified:  true,
+		Role:      Role("user"),
+		UpdatedAt: time.Now(),
 	}
 
 	userResponse := models.FilteredResponse(user)
 
-	return c.Status(http.StatusCreated).JSON(fiber.Map{"status": "success", "data": fiber.Map{"user": userResponse}})
+	return c.Status(http.StatusCreated).JSON(fiber.Map{
+		"status": "success",
+		"data": fiber.Map{
+			"user":        userResponse,
+			"user_detail": userDetail,
+		},
+	})
+
 }
+
+// func (ac *AuthController) SignUpUser(c *fiber.Ctx) error {
+// 	var credentials *db.CreateUserParams
+
+// 	if err := c.BodyParser(&credentials); err != nil {
+// 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+// 	}
+
+// 	hashedPassword := utils.HashPassword(credentials.Password)
+
+// 	args := &db.CreateUserParams{
+// 		Email:     credentials.Email,
+// 		Password:  hashedPassword,
+// 		Verified:  true,
+// 		Role:      "user",
+// 		UpdatedAt: time.Now(),
+// 	}
+
+// 	user, err := ac.db.CreateUser(c.Context(), *args)
+
+// 	if err != nil {
+// 		return c.Status(http.StatusBadGateway).JSON(fiber.Map{"error": err.Error()})
+// 	}
+
+// 	userResponse := models.FilteredResponse(user)
+
+// 	return c.Status(http.StatusCreated).JSON(fiber.Map{"status": "success", "data": fiber.Map{"user": userResponse}})
+// }
 
 func (ac *AuthController) SignInUser(c *fiber.Ctx) error {
 	var credentials *models.SignInInput
