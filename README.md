@@ -49,7 +49,7 @@ Get All Tag> api/food/ [GET]
 
 Delete TagByID> api/food/1 [DELETE]
 
-### Immunization
+## Immunization
 
 Create Immunization> api/immunization/ [POST]
 
