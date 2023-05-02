@@ -65,7 +65,7 @@ Delete TagByID> api/food/1 [DELETE]
 Create Immunization> api/immunization/ [POST]
 
 >{
-  "name":"New Immunization> "
+  "name":"New Immunization "
 }
 
 Update Immunization> api/immunization/1 [PATCH]
